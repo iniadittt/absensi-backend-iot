@@ -21,7 +21,7 @@ steps:
       - '--min-instances=0'
       - '--max-instances=2'
       - '--allow-unauthenticated'
-      - '--set-secrets=DATABASE_URL=database_url_absensi'
+      - '--set-secrets=DATABASE_URL=database_url_absensi:latest'
 images:
   - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/bjir-artifact/absensi:$COMMIT_SHA'
 logsBucket: 'gs://bucket-adit-ganteng/logs'
