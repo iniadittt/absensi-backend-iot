@@ -1,5 +1,4 @@
 import { Request, Response } from "express"
-import { environment } from "./environment";
 import prisma from "./prisma";
 import { WhatsAppClient } from './whatsapp';
 import { Presensi, Status, User } from "@prisma/client";
