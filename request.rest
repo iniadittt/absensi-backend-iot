@@ -1,0 +1,15 @@
+###
+
+GET http://localhost:3000/
+Content-type: application/json
+
+{}
+
+###
+
+GET http://localhost:3000/presensi
+Content-type: application/json
+
+{}
+
+

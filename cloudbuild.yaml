@@ -1,0 +1,27 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: 
+      - 'build'
+      - '-t'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/bjir-artifact/absensi:$COMMIT_SHA'
+      - '.'
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - 'push'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/bjir-artifact/absensi:$COMMIT_SHA'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'backend-absensi'
+      - '--image=asia-southeast2-docker.pkg.dev/$PROJECT_ID/bjir-artifact/absensi:$COMMIT_SHA'
+      - '--region=us-central1'
+      - '--cpu=2'
+      - '--memory=4096Mi'
+      - '--min-instances=0'
+      - '--max-instances=2'
+      - '--allow-unauthenticated'
+      - '--set-secrets=DATABASE_URL=database_url_absensi'
+images:
+  - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/bjir-artifact/absensi:$COMMIT_SHA'
+logsBucket: 'gs://bucket-adit-ganteng/logs'
