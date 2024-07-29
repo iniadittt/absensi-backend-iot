@@ -1,3 +1,4 @@
 node_modules
-# Keep environment variables out of version control
 .env
+.wwebjs_auth
+.wwebjs_cache
