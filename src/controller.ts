@@ -14,7 +14,8 @@ export default class Controller {
 
     async deleteAllPresensi(request: Request, response: Response) {
         try {
-            await prisma.presensi.deleteMany()
+            const deleteAllPresensi = await prisma.presensi.deleteMany()
+            if (!deleteAllPresensi) return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
             return response.status(200).json({ status: 200, message: 'Berhasil menghapus semua presensi' });
         } catch (error) {
             return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
@@ -147,7 +148,7 @@ export default class Controller {
                     email: request.body.email,
                     nidn: request.body.nidn,
                     name: request.body.name,
-                    jk: request.body.jk ? Jk.laki_laki : Jk.perempuan,
+                    jk: request.body.jk,
                     phone: request.body.phone,
                     alamat: request.body.alamat,
                     idRfid: request.body.idRfid,
@@ -166,6 +167,19 @@ export default class Controller {
             if (isNaN(id)) return response.status(400).json({ status: 400, message: 'ID harus berupa angka' })
             const user: User | null = await prisma.user.findUnique({ where: { id } });
             if (!user) return response.status(400).json({ status: 400, message: 'Data user tidak ada' });
+            const updatedUser = await prisma.user.update({
+                where: { id },
+                data: {
+                    nidn: request.body.nidn || user.nidn,
+                    name: request.body.name || user.name,
+                    jk: request.body.jk || user.jk,
+                    phone: request.body.phone || user.phone,
+                    alamat: request.body.alamat || user.alamat,
+                    idRfid: request.body.idRfid || user.idRfid,
+                },
+            })
+            if (!updatedUser) return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
+            return response.status(200).json({ status: 200, message: `Berhasil mengubah data user dengan email ${user.email}` });
         } catch (error: any) {
             return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
         }
@@ -173,7 +187,13 @@ export default class Controller {
 
     async deleteUser(request: Request, response: Response) {
         try {
-
+            const id: number = parseInt(request.params.id)
+            if (isNaN(id)) return response.status(400).json({ status: 400, message: 'ID harus berupa angka' })
+            const user: User | null = await prisma.user.findUnique({ where: { id } });
+            if (!user) return response.status(404).json({ status: 404, message: 'Data user tidak ditemukan' });
+            const deleteUser: User | null = await prisma.user.delete({ where: { id } });
+            if (!deleteUser) return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
+            return response.status(200).json({ status: 200, message: `Berhasil menghapus user dengan email ${user.email}` });
         } catch (error: any) {
             return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
         }
