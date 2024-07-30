@@ -12,6 +12,15 @@ const whatsappClient = new WhatsAppClient();
 export default class Controller {
     constructor() { }
 
+    async deleteAllPresensi(request: Request, response: Response) {
+        try {
+            await prisma.presensi.deleteMany()
+            return response.status(200).json({ status: 200, message: 'Berhasil menghapus semua presensi' });
+        } catch (error) {
+            return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
+        }
+    }
+
     async index(request: Request, response: Response) {
         try {
             await whatsappClient.sendMessage('6283897916745', 'Hello World FROM Aditya')

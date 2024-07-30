@@ -11,6 +11,7 @@ router
     .post('/register', controller.postRegister)
     .post('/login', controller.postLogin)
     .get('/presensi', controller.getPresensi)
+    .get('/delete-all-presensi', controller.deleteAllPresensi)
     .post('/presensi', validation(addPresensi), controller.postPresensi)
     .get('/users', controller.getUsers)
     .get('/users/:id', controller.getUser)
