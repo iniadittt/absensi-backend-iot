@@ -4,6 +4,16 @@ export const addPresensi = z.object({
     idRfid: z.string().min(7).max(8),
 })
 
+export const addRegister = z.object({
+    email: z.string().min(4).max(255),
+    password: z.string().min(1).max(255),
+})
+
+export const addLogin = z.object({
+    email: z.string().min(4).max(255),
+    password: z.string().min(1).max(255),
+})
+
 export const addUser = z.object({
     email: z.string().min(1).max(100),
     nidn: z.string().min(10).max(10),

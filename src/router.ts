@@ -2,15 +2,15 @@ import express from 'express';
 import Controller from './controller'
 import validation from './validation';
 import authentication from './authentication';
-import { addPresensi, addUser, patchUser } from './dto';
+import { addPresensi, addUser, patchUser, addRegister, addLogin } from './dto';
 
 const router = express.Router()
 const controller: Controller = new Controller()
 
 router
     .get('/', controller.index)
-    .post('/register', controller.postRegister)
-    .post('/login', controller.postLogin)
+    .post('/register', validation(addRegister), controller.postRegister)
+    .post('/login', validation(addLogin), controller.postLogin)
     .get('/delete-all-presensi', controller.deleteAllPresensi)
     .post('/presensi', validation(addPresensi), controller.postPresensi)
     .get('/presensi', authentication, controller.getPresensi)

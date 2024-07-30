@@ -44,7 +44,7 @@ model Presensi {
 }
 
 model Account {
-  id    Int    @id @default(autoincrement())
-  email String @unique @db.VarChar(255)
+  id       Int    @id @default(autoincrement())
+  email    String @unique @db.VarChar(255)
   password String @db.VarChar(255)
 }
