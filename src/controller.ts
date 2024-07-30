@@ -97,7 +97,7 @@ export default class Controller {
             });
             if (!createdPresensi) return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
             await whatsappClient.sendMessage(user.phone, `${user.name}, anda berhasil melakukan presensi ${status}, pukul: ${todayInUTCPlus7.toLocaleTimeString('id-ID')} WIB`);
-            return response.status(200).json({ status: 200, message: 'Berhasil get data presensi' });
+            return response.status(200).json({ status: 200, message: 'Berhasil melakukan presensi' });
         } catch (error: any) {
             return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
         }

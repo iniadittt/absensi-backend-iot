@@ -19,9 +19,9 @@ Content-type: application/json
 
 ###
 
-POST http://localhost:3000/presensi
+POST http://34.101.161.86:3000/presensi
 Content-type: application/json
 
 {
-    "idRfid": "OiqB1ZpN67"
+    "idRfid": "78285894"
 }
