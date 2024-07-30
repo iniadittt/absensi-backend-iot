@@ -50,7 +50,8 @@ export default class Controller {
             const { email, password } = request.body
             const account: Account | null = await prisma.account.findUnique({ where: { email } });
             if (!account) return response.status(400).json({ status: 400, message: 'Email dan password salah' });
-            if (account.password !== password) return response.status(400).json({ status: 400, message: 'Email dan password salah' });
+            const matchPassword: boolean = bcrypt.compareSync(password, account.password)
+            if (!matchPassword) return response.status(400).json({ status: 400, message: 'Email dan password salah' });
             const token: string = jwt.sign({ id: account.id }, environment.jwt.secret, { expiresIn: '30d' });
             return response.status(200).json({ status: 200, message: 'Berhasil login', data: { token } });
         } catch (error: any) {

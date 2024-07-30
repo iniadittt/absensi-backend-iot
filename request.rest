@@ -23,5 +23,25 @@ POST http://34.101.161.86:3000/presensi
 Content-type: application/json
 
 {
-    "idRfid": "5AF5A8A"
+    "idRfid": "78285894"
+}
+
+###
+
+POST http://34.101.161.86:3000/login
+Content-type: application/json
+
+{
+    "email": "admin@gmail.com",
+    "password": "password"
+}
+
+###
+
+POST http://34.101.161.86:3000/register
+Content-type: application/json
+
+{
+    "email": "admin@gmail.com",
+    "password": "password"
 }
