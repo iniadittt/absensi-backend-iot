@@ -6,8 +6,16 @@ import { addPresensi } from './dto';
 const router = express.Router()
 const controller: Controller = new Controller()
 
-router.get('/', controller.index);
-router.get('/presensi', controller.getPresensi);
-router.post('/presensi', validation(addPresensi), controller.postPresensi);
+router
+    .get('/', controller.index)
+    .post('/register', controller.postRegister)
+    .post('/login', controller.postLogin)
+    .get('/presensi', controller.getPresensi)
+    .post('/presensi', validation(addPresensi), controller.postPresensi)
+    .get('/users', controller.getUsers)
+    .get('/users/:id', controller.getUser)
+    .post('/users', controller.postUser)
+    .patch('/users/:id', controller.patchUser)
+    .delete('/users/:id', controller.deleteUser)
 
 export default router
