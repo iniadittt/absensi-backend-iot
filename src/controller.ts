@@ -22,6 +22,23 @@ export default class Controller {
         }
     }
 
+    async dashboard(request: Request, response: Response) {
+        try {
+            const todayUTC: Date = new Date();
+            const currentUTCOffsetInMilliseconds = todayUTC.getTimezoneOffset() * 60 * 1000;
+            const utcPlus7OffsetInMilliseconds = 7 * 60 * 60 * 1000;
+            const todayInUTCPlus7: Date = new Date(todayUTC.getTime() + currentUTCOffsetInMilliseconds + utcPlus7OffsetInMilliseconds);
+            const startOfDay = new Date(todayInUTCPlus7.getFullYear(), todayInUTCPlus7.getMonth(), todayInUTCPlus7.getDate(), 0, 0, 0, 0)
+            const endOfDay = new Date(todayInUTCPlus7.getFullYear(), todayInUTCPlus7.getMonth(), todayInUTCPlus7.getDate(), 23, 59, 59, 999)
+            const dosenCount = await prisma.user.count()
+            const presensiCount = await prisma.presensi.count({ where: { time: { gte: startOfDay, lt: endOfDay } } })
+            return response.status(200).json({ status: 200, message: 'Berhasil mengambil data dashboard', data: { dosen: dosenCount || 0, presensi: presensiCount || 0, } });
+
+        } catch (error) {
+            return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
+        }
+    }
+
     async dosen(request: Request, response: Response) {
         try {
             const todayUTC: Date = new Date();
