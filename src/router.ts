@@ -19,5 +19,6 @@ router
     .post('/users', authentication, validation(addUser), controller.postUser)
     .patch('/users/:id', authentication, validation(patchUser), controller.patchUser)
     .delete('/users/:id', authentication, controller.deleteUser)
+    .get('/dosen', controller.dosen)
 
 export default router

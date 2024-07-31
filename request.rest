@@ -7,14 +7,14 @@ Content-type: application/json
 
 ###
 
-GET http://localhost:3000/presensi
+GET http://localhost:5000/dosen
 Content-type: application/json
 
 {}
 
 ###
 
-GET http://localhost:3001/presensi?name=admin
+GET http://localhost:3001/presensi?name=
 Content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzIyMzU0NDc2LCJleHAiOjE3MjQ5NDY0NzZ9.-5sk4Tt4vOIHBEZca9A4AAhMnHMXvfJDWSZfEeiagbU
 

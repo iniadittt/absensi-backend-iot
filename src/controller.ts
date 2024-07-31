@@ -22,6 +22,64 @@ export default class Controller {
         }
     }
 
+    async dosen(request: Request, response: Response) {
+        try {
+            const todayUTC: Date = new Date();
+            const currentUTCOffsetInMilliseconds = todayUTC.getTimezoneOffset() * 60 * 1000;
+            const utcPlus7OffsetInMilliseconds = 7 * 60 * 60 * 1000;
+            const todayInUTCPlus7: Date = new Date(todayUTC.getTime() + currentUTCOffsetInMilliseconds + utcPlus7OffsetInMilliseconds);
+            const startOfDay = new Date(todayInUTCPlus7.getFullYear(), todayInUTCPlus7.getMonth(), todayInUTCPlus7.getDate(), 0, 0, 0, 0)
+            const endOfDay = new Date(todayInUTCPlus7.getFullYear(), todayInUTCPlus7.getMonth(), todayInUTCPlus7.getDate(), 23, 59, 59, 999)
+            const presences: PresensiWithUser[] = await prisma.presensi.findMany({
+                include: {
+                    user: true
+                },
+                where: {
+                    time: {
+                        gte: startOfDay,
+                        lt: endOfDay
+                    }
+                }
+            })
+            const users: User[] = await prisma.user.findMany()
+            const presentedDosen = users.map((dosen: User) => {
+                const presence = presences.filter((presensi: PresensiWithUser) => presensi.user.id === dosen.id)
+                const { id, name, ...values } = dosen
+                const time = presence.length === 1 ? new Date(presence[0].time) : presence.length === 2 ? new Date(presence[1].time) : null
+                if (presence.length === 1) {
+                    return {
+                        id, name, time, status: "1"
+                    }
+                } else if (presence.length === 2) {
+                    return {
+                        id, name, time, status: "2"
+                    }
+                } else {
+                    return {
+                        id, name, time, status: "0"
+                    }
+                }
+            })
+            type DosenFiltered = { id: number, name: string, time: Date }
+            const dosenHadir: DosenFiltered[] = []
+            const dosenPulang: DosenFiltered[] = []
+            const dosenTidakHadir: DosenFiltered[] = []
+            presentedDosen.forEach((dosen: { id: number, name: string, time: any, status: string }) => {
+                const { status, ...data } = dosen
+                if (status === "1") {
+                    dosenHadir.push(data)
+                } else if (status === "2") {
+                    dosenPulang.push(data)
+                } else {
+                    dosenTidakHadir.push(data)
+                }
+            })
+            return response.status(200).json({ status: 200, message: 'Berhasil mengambil semua dosen', data: { dosenHadir, dosenPulang, dosenTidakHadir } });
+        } catch (error) {
+            return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
+        }
+    }
+
     async index(request: Request, response: Response) {
         try {
             await whatsappClient.sendMessage('6283897916745', 'Hello World FROM Aditya')
