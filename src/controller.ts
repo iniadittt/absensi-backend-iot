@@ -61,9 +61,18 @@ export default class Controller {
 
     async getPresensi(request: Request, response: Response) {
         try {
+            const name: string = request.query.name as string;
             const presensi: PresensiWithUser[] = await prisma.presensi.findMany({
+                where: {
+                    user: {
+                        name: name ? { startsWith: name } : undefined
+                    }
+                },
                 include: {
                     user: true
+                },
+                orderBy: {
+                    time: 'desc'
                 }
             });
             if (presensi.length === 0) return response.status(404).json({ status: 404, message: 'Data presensi tidak ditemukan' });

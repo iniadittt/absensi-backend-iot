@@ -1,3 +1,2 @@
-2024/07/30-18:00:46.133 1558 Reusing MANIFEST C:\.project\test\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
-2024/07/30-18:00:46.133 1558 Recovering log #3
-2024/07/30-18:00:46.134 1558 Reusing old log C:\.project\test\.wwebjs_auth\session\Default\Service Worker\Database/000003.log 
+2024/07/31-13:23:22.461 3998 Creating DB C:\.project\test\.wwebjs_auth\session\Default\Service Worker\Database since it was missing.
+2024/07/31-13:23:22.470 3998 Reusing MANIFEST C:\.project\test\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
