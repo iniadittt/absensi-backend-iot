@@ -21,5 +21,6 @@ router
     .delete('/users/:id', authentication, controller.deleteUser)
     .get('/dosen', controller.dosen)
     .get('/dashboard',authentication, controller.dashboard)
+    .get('/reports/:tahun/:bulan/download', controller.downloadPdf)
 
 export default router

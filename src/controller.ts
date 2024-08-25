@@ -6,11 +6,96 @@ import { WhatsAppClient } from './whatsapp';
 import { Account, Jk, Presensi, Status, User } from "@prisma/client";
 import { PresensiWithUser, PresensiData } from "./interface";
 import { environment } from "./environment";
+import fs from "fs";
+import PDFDocument from "pdfkit-table";
 
 const whatsappClient = new WhatsAppClient();
 
 export default class Controller {
     constructor() { }
+
+    async downloadPdf(request: Request, response: Response) {
+        try {
+            const tahun: number = parseInt(request.params.tahun)
+            const bulan: number = parseInt(request.params.bulan)
+            if (isNaN(tahun) || isNaN(bulan)) return response.status(400).json({ status: 400, message: 'Tahun dan bulan harus berupa angka' })
+            const doc = new PDFDocument();
+            response.setHeader('Content-Type', 'application/pdf');
+            response.setHeader('Content-Disposition', 'attachment; filename=document.pdf');
+            doc.pipe(response);
+            doc.fontSize(12).font('Helvetica')
+            const table = {
+                headers: ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
+                rows: [
+                    ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
+                    ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
+                    ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
+                ],
+            };
+            const kehadiranBulanan = await prisma.presensi.findMany({
+                where: {
+                    time: {
+                        gte: new Date(tahun, bulan - 1, 1),
+                        lt: new Date(tahun, bulan, 1),
+                    },
+                },
+                include: {
+                    user: true,
+                },
+            });
+            const kehadiranDosenBulanan = kehadiranBulanan.reduce((result: any, presensi) => {
+                console.log({ result })
+                const userId: number = presensi.user.id
+                const userFound = result.find((item: any) => item.userId === userId);
+                if (!userFound) {
+                    result.push({
+                        userId,
+                        nama: presensi.user.name,
+                        nip: presensi.user.nidn,
+                        masuk: presensi.status === Status.masuk ? 1 : 0,
+                        keluar: presensi.status === Status.keluar ? 1 : 0,
+                        kehadiran: Math.max(presensi.status === Status.masuk ? 1 : 0, presensi.status === Status.keluar ? 1 : 0),
+                    });
+                } else {
+                    userFound.kehadiran = Math.max(userFound.masuk, userFound.keluar);
+                }
+                return result;
+            }, []);
+            const absensi = kehadiranDosenBulanan.map((data: any) => ([data.nama, data.nip, data.kehadiran]))
+            doc.text('Laporan Absensi Dosen FIKTI UMSU');
+            doc.moveDown();
+            doc.text(`Tahun: ${tahun}`);
+            doc.moveDown();
+            doc.text(`Bulan: ${bulan}`);
+            doc.moveDown();
+            const tableStartX = doc.x;
+            const tableStartY = doc.y;
+            const columnWidths = [150, 150, 150, 150];
+            doc.font('Helvetica-Bold');
+            let currentX = tableStartX;
+            table.headers.forEach((header, index) => {
+                doc.rect(currentX, tableStartY, columnWidths[index], 20).stroke();
+                doc.text(header, currentX + 5, tableStartY + 5);
+                currentX += columnWidths[index];
+            });
+            let currentY = tableStartY + 20;
+            doc.font('Helvetica');
+            absensi.forEach((row: any) => {
+                currentX = tableStartX;
+                row.forEach((cell: any, index: any) => {
+                    doc.rect(currentX, currentY, columnWidths[index], 20).stroke();
+                    doc.text(cell, currentX + 5, currentY + 5);
+                    currentX += columnWidths[index];
+                });
+                currentY += 20;
+            });
+
+            doc.end();
+        } catch (error) {
+            console.error('Error while generating PDF:', error);
+            return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
+        }
+    }
 
     async deleteAllPresensi(request: Request, response: Response) {
         try {
