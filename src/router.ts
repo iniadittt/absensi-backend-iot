@@ -20,7 +20,7 @@ router
     .patch('/users/:id', authentication, validation(patchUser), controller.patchUser)
     .delete('/users/:id', authentication, controller.deleteUser)
     .get('/dosen', controller.dosen)
-    .get('/dashboard',authentication, controller.dashboard)
-    .get('/reports/:tahun/:bulan/download', controller.downloadPdf)
+    .get('/dashboard', authentication, controller.dashboard)
+    .get('/reports/:tahun/:bulan/download', authentication, controller.downloadPdf)
 
 export default router

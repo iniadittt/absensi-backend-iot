@@ -25,12 +25,8 @@ export default class Controller {
             doc.pipe(response);
             doc.fontSize(12).font('Helvetica')
             const table = {
-                headers: ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
-                rows: [
-                    ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
-                    ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
-                    ["Nama Dosen", "NIP/NIDN", "Jumlah Kehadiran"],
-                ],
+                headers: ["Nama Dosen", "NIP/NIDN", "Kehadiran"],
+                rows: [],
             };
             const kehadiranBulanan = await prisma.presensi.findMany({
                 where: {
@@ -44,7 +40,6 @@ export default class Controller {
                 },
             });
             const kehadiranDosenBulanan = kehadiranBulanan.reduce((result: any, presensi) => {
-                console.log({ result })
                 const userId: number = presensi.user.id
                 const userFound = result.find((item: any) => item.userId === userId);
                 if (!userFound) {
@@ -70,7 +65,7 @@ export default class Controller {
             doc.moveDown();
             const tableStartX = doc.x;
             const tableStartY = doc.y;
-            const columnWidths = [150, 150, 150, 150];
+            const columnWidths = [400, 70, 70];
             doc.font('Helvetica-Bold');
             let currentX = tableStartX;
             table.headers.forEach((header, index) => {
@@ -92,7 +87,6 @@ export default class Controller {
 
             doc.end();
         } catch (error) {
-            console.error('Error while generating PDF:', error);
             return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
         }
     }
