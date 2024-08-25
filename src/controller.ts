@@ -6,7 +6,6 @@ import { WhatsAppClient } from './whatsapp';
 import { Account, Jk, Presensi, Status, User } from "@prisma/client";
 import { PresensiWithUser, PresensiData } from "./interface";
 import { environment } from "./environment";
-import fs from "fs";
 import PDFDocument from "pdfkit-table";
 
 const whatsappClient = new WhatsAppClient();
@@ -65,7 +64,7 @@ export default class Controller {
             doc.moveDown();
             const tableStartX = doc.x;
             const tableStartY = doc.y;
-            const columnWidths = [400, 70, 70];
+            const columnWidths = [280, 150, 70];
             doc.font('Helvetica-Bold');
             let currentX = tableStartX;
             table.headers.forEach((header, index) => {
@@ -178,7 +177,6 @@ export default class Controller {
 
     async index(request: Request, response: Response) {
         try {
-            await whatsappClient.sendMessage('6283897916745', 'Hello World FROM Aditya')
             return response.status(200).json({ message: 'Hello World' });
         } catch (error: any) {
             return response.status(500).json({ status: 500, message: 'Terjadi kesalahan pada server' });
